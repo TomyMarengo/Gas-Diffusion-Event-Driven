@@ -11,8 +11,8 @@ public class Writer {
     private final double radius = 0.0015; // [m]
     private final double mass = 1; // [kg]
     private final double initialVelocity = 0.01; // [m/s]
-    private final int maxStep = 500;
-    private final int N = 250; // >200
+    private final int maxStep = 1000;
+    private final int N = 50; // >200
 
 
     private void writeStaticFile() throws IOException {
@@ -54,7 +54,7 @@ public class Writer {
             do {
                 isOverlap = false;
                 x = rand.nextDouble() * (mainPerimeterWidth - 2 * radius) + radius;
-                y = rand.nextDouble() * (mainPerimeterHeight - 2 * radius) + radius;
+                y = -(rand.nextDouble() * (mainPerimeterHeight - 2 * radius) + radius);
 
                 for (Particle existingParticle : particles) {
                     double distance = Math.sqrt(Math.pow(x - existingParticle.getX(), 2) + Math.pow(y - existingParticle.getY(), 2));
