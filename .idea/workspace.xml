@@ -5,15 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="bcfb138a-7595-4bb2-bff4-5703fccadc01" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/codeStyles/codeStyleConfig.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/GasDiffusion.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/GasDifusion.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Particle.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Particle.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Writer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Writer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/GasDiffusion.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/GasDiffusion.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -86,7 +79,7 @@
       <workItem from="1694049331694" duration="3049000" />
       <workItem from="1694052412523" duration="332000" />
       <workItem from="1694052766946" duration="1896000" />
-      <workItem from="1694092303205" duration="3188000" />
+      <workItem from="1694092303205" duration="8544000" />
     </task>
     <servers />
   </component>

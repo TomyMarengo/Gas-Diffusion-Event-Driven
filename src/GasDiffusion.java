@@ -64,20 +64,21 @@ public class GasDiffusion {
                 // Calcula la posición futura de la partícula
                 double futureX = particle.getX() + particle.getVelocityX() * timeToCollision[i][j];
                 double futureY = particle.getY() + particle.getVelocityY() * timeToCollision[i][j];
+                double radius = particle.getRadius();
 
                 switch (j % particles.size()) {
                     case 0 -> // Pared izquierda del cuadrado
-                            timeToCollision[i][j] = (-mainPerimeterHeight <= futureY && futureY <= 0) ? timeToCollision[i][j] : Double.MAX_VALUE;
+                            timeToCollision[i][j] = (-mainPerimeterHeight + radius <= futureY && futureY <= 0 - radius) ? timeToCollision[i][j] : Double.MAX_VALUE;
                     case 1, 7 -> // Pared superior e inferior del cuadrado
-                            timeToCollision[i][j] = (0 <= futureX && futureX <= mainPerimeterWidth) ? timeToCollision[i][j] : Double.MAX_VALUE;
+                            timeToCollision[i][j] = (0 + radius <= futureX && futureX <= mainPerimeterWidth - radius) ? timeToCollision[i][j] : Double.MAX_VALUE;
                     case 2 -> // Pared derecha del cuadrado, parte de arriba
-                            timeToCollision[i][j] = (-(mainPerimeterHeight - minorPerimeterHeight) / 2 <= futureY && futureY <= 0) ? timeToCollision[i][j] : Double.MAX_VALUE;
-                    case 3, 5 -> // Pared superior del rectángulo
-                            timeToCollision[i][j] = (mainPerimeterWidth <= futureX && futureX <= mainPerimeterWidth + minorPerimeterWidth) ? timeToCollision[i][j] : Double.MAX_VALUE;
+                            timeToCollision[i][j] = (-(mainPerimeterHeight - minorPerimeterHeight) / 2 - radius <= futureY && futureY <= 0 - radius) ? timeToCollision[i][j] : Double.MAX_VALUE;
+                    case 3, 5 -> // Pared superior e inferior del rectángulo
+                            timeToCollision[i][j] = (mainPerimeterWidth - radius <= futureX && futureX <= mainPerimeterWidth + minorPerimeterWidth - radius) ? timeToCollision[i][j] : Double.MAX_VALUE;
                     case 4 -> // Pared derecha del rectángulo
-                            timeToCollision[i][j] = (-((mainPerimeterHeight - minorPerimeterHeight) / 2 + minorPerimeterHeight) <= futureY && futureY <= -(mainPerimeterHeight - minorPerimeterHeight) / 2) ? timeToCollision[i][j] : Double.MAX_VALUE;
+                            timeToCollision[i][j] = (-((mainPerimeterHeight - minorPerimeterHeight) / 2 + minorPerimeterHeight) + radius <= futureY && futureY <= -(mainPerimeterHeight - minorPerimeterHeight) / 2 - radius)  ? timeToCollision[i][j] : Double.MAX_VALUE;
                     case 6 -> // Pared derecha del cuadrado, parte de abajo
-                            timeToCollision[i][j] = (-mainPerimeterHeight <= futureY && futureY <= -((mainPerimeterHeight - minorPerimeterHeight) / 2 + minorPerimeterHeight)) ? timeToCollision[i][j] : Double.MAX_VALUE;
+                            timeToCollision[i][j] = (-mainPerimeterHeight + radius <= futureY && futureY <= -((mainPerimeterHeight - minorPerimeterHeight) / 2 + minorPerimeterHeight) + radius) ? timeToCollision[i][j] : Double.MAX_VALUE;
                 }
             }
         }
@@ -162,7 +163,8 @@ public class GasDiffusion {
             Particle particle = particles.get(minI);
             if (minJ % 2 == 0) {
                 particle.setVelocityX(-particle.getVelocityX());
-            } else {
+            }
+            else {
                 particle.setVelocityY(-particle.getVelocityY());
             }
         } else {
