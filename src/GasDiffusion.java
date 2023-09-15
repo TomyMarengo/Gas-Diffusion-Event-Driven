@@ -209,6 +209,11 @@ public class GasDiffusion {
         }
     }
 
+    public void calculatePressure() {
+        //Calculate the pressure as the impulse transferred to the walls per unit time and per unit length
+
+    }
+
     public void start() {
         //Write outputs step by step
         writeOutputStep(0);
@@ -237,10 +242,10 @@ public class GasDiffusion {
     }
 
     public static void main(String[] args) {
-        int N, maxStep;
-        double mainPerimeterWidth, mainPerimeterHeight;
-        double minorPerimeterWidth, minorPerimeterHeight;
-        double radius, mass, initialVelocity;
+        int N = 0, maxStep = 0;
+        double mainPerimeterWidth = 0, mainPerimeterHeight = 0;
+        double minorPerimeterWidth = 0, minorPerimeterHeight;
+        double radius = 0, mass= 0, initialVelocity = 0;
 
         double[] inputs = {0.03, 0.05, 0.07, 0.09};
         int maxRep = 1;
@@ -285,29 +290,27 @@ public class GasDiffusion {
                             minorPerimeterWidth, minorPerimeterHeight, maxStep, rep);
                     gd.start();
 
-
-                    try {
-                        BufferedWriter writerPy = new BufferedWriter(new FileWriter("../GasDiffusionAnimation/outputs/data.txt", true));
-
-                        writerPy.write("N " + N + "\n");
-                        writerPy.write("MAX_STEP " + maxStep + "\n");
-                        writerPy.write("RADIUS " + radius + "\n");
-                        writerPy.write("MASS " + mass + "\n");
-                        writerPy.write("INIT_VELOCITY " + initialVelocity + "\n");
-                        writerPy.write("MAIN_WIDTH " + mainPerimeterWidth + "\n");
-                        writerPy.write("MAIN_HEIGHT " + mainPerimeterHeight + "\n");
-                        writerPy.write("MINOR_WIDTH " + minorPerimeterWidth + "\n");
-                        writerPy.write("MINOR_HEIGHT " + minorPerimeterHeight + "\n\n");
-
-                        writerPy.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
+        }
+
+        try {
+            BufferedWriter writerPy = new BufferedWriter(new FileWriter("../GasDiffusionAnimation/outputs/data.txt", true));
+
+            writerPy.write("N " + N + "\n");
+            writerPy.write("MAX_STEP " + maxStep + "\n");
+            writerPy.write("RADIUS " + radius + "\n");
+            writerPy.write("MASS " + mass + "\n");
+            writerPy.write("INIT_VELOCITY " + initialVelocity + "\n");
+            writerPy.write("MAIN_WIDTH " + mainPerimeterWidth + "\n");
+            writerPy.write("MAIN_HEIGHT " + mainPerimeterHeight + "\n");
+            writerPy.write("MINOR_WIDTH " + minorPerimeterWidth + "\n");
+
+            writerPy.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }
