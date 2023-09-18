@@ -5,28 +5,22 @@ import java.util.List;
 public class GasDiffusion {
     private final List<Particle> particles;
     private final double[][] timeToCollision;
-
     private final double mainPerimeterWidth;
     private final double mainPerimeterHeight;
     private final double minorPerimeterWidth;
     private final double minorPerimeterHeight;
-    private final int maxStep;
     private double actualTime = 0;
-    private int rep;
     private int lastMinI = -1, lastMinJ = -1;
-
     private final int NUMBER_OF_WALLS = 8;
 
     public GasDiffusion(List<Particle> particles, double mainPerimeterWidth, double mainPerimeterHeight,
-                        double minorPerimeterWidth, double minorPerimeterHeight, int maxStep, int rep) {
+                        double minorPerimeterWidth, double minorPerimeterHeight) {
         this.particles = particles;
         this.timeToCollision = new double[particles.size() + NUMBER_OF_WALLS][particles.size() + NUMBER_OF_WALLS];
         this.mainPerimeterWidth = mainPerimeterWidth;
         this.mainPerimeterHeight = mainPerimeterHeight;
         this.minorPerimeterWidth = minorPerimeterWidth;
         this.minorPerimeterHeight = minorPerimeterHeight;
-        this.maxStep = maxStep;
-        this.rep = rep;
     }
 
     private void collisionToWalls(int i) {
@@ -76,7 +70,7 @@ public class GasDiffusion {
                     case 3, 5 -> // Pared superior e inferior del rectángulo
                             timeToCollision[i][j] = (mainPerimeterWidth - radius <= futureX && futureX <= mainPerimeterWidth + minorPerimeterWidth - radius) ? timeToCollision[i][j] : Double.MAX_VALUE;
                     case 4 -> // Pared derecha del rectángulo
-                            timeToCollision[i][j] = (-((mainPerimeterHeight - minorPerimeterHeight) / 2 + minorPerimeterHeight) + radius <= futureY && futureY <= -(mainPerimeterHeight - minorPerimeterHeight) / 2 - radius)  ? timeToCollision[i][j] : Double.MAX_VALUE;
+                            timeToCollision[i][j] = (-((mainPerimeterHeight - minorPerimeterHeight) / 2 + minorPerimeterHeight) + radius <= futureY && futureY <= -(mainPerimeterHeight - minorPerimeterHeight) / 2 - radius) ? timeToCollision[i][j] : Double.MAX_VALUE;
                     case 6 -> // Pared derecha del cuadrado, parte de abajo
                             timeToCollision[i][j] = (-mainPerimeterHeight + radius <= futureY && futureY <= -((mainPerimeterHeight - minorPerimeterHeight) / 2 + minorPerimeterHeight) + radius) ? timeToCollision[i][j] : Double.MAX_VALUE;
                 }
@@ -163,8 +157,7 @@ public class GasDiffusion {
             Particle particle = particles.get(minI);
             if (minJ % 2 == 0) {
                 particle.setVelocityX(-particle.getVelocityX());
-            }
-            else {
+            } else {
                 particle.setVelocityY(-particle.getVelocityY());
             }
         } else {
@@ -193,7 +186,7 @@ public class GasDiffusion {
     private void writeOutputStep(int step) {
         try {
             BufferedWriter writer = new BufferedWriter(new FileWriter(
-                    "../GasDiffusionAnimation/outputs/output_" + minorPerimeterHeight + "_" + rep + ".txt", true));
+                    "../GasDiffusionAnimation/outputs/output_" + minorPerimeterHeight + "_0" + ".txt", true));
             writer.write("STEP " + step + "\n");
             writer.write("TIME " + actualTime + "\n");
             writer.write("COLLISION " + lastMinI + " " + (lastMinJ >= particles.size() ? "P" + lastMinJ % particles.size() : lastMinJ) + "\n");
@@ -209,18 +202,13 @@ public class GasDiffusion {
         }
     }
 
-    public void calculatePressure() {
-        //Calculate the pressure as the impulse transferred to the walls per unit time and per unit length
-
-    }
-
     public void start() {
         //Write outputs step by step
         writeOutputStep(0);
 
         long startTime, endTime, elapsedTime = 0;
         int i;
-        for (i = 1; i <= maxStep; i++) {
+        for (i = 1; actualTime <= 500; i++) {
             startTime = System.currentTimeMillis();
             doAStep();
             endTime = System.currentTimeMillis();
@@ -230,7 +218,7 @@ public class GasDiffusion {
 
         try {
             BufferedWriter writer = new BufferedWriter(new FileWriter(
-                    "../GasDiffusionAnimation/outputs/output_" + minorPerimeterHeight + "_" + rep + ".txt", true));
+                    "../GasDiffusionAnimation/outputs/output_" + minorPerimeterHeight + "_0" + ".txt", true));
 
             writer.write("N " + particles.size() + "\n");
             writer.write("MAXSTEP " + i + "\n");
@@ -242,74 +230,68 @@ public class GasDiffusion {
     }
 
     public static void main(String[] args) {
-        int N = 0, maxStep = 0;
+        int N = 0;
         double mainPerimeterWidth = 0, mainPerimeterHeight = 0;
         double minorPerimeterWidth = 0, minorPerimeterHeight;
-        double radius = 0, mass= 0, initialVelocity = 0;
+        double radius = 0, mass = 0, initialVelocity = 0;
 
-        double[] inputs = {0.03, 0.05, 0.07, 0.09};
-        int maxRep = 1;
+        double[] inputs = {0.09};
 
         Writer writer = new Writer();
         for (double input : inputs) {
-            for (int rep = 0; rep < maxRep; rep++) {
-                writer.write(input);
-                List<Particle> particles = new ArrayList<>();
+            writer.write(input);
+            List<Particle> particles = new ArrayList<>();
 
-                try {
-                    // Read static file
-                    BufferedReader staticReader = new BufferedReader(new FileReader("txt/static_" + input + ".txt"));
-                    N = Integer.parseInt(staticReader.readLine().split(" ")[1]);
-                    maxStep = Integer.parseInt(staticReader.readLine().split(" ")[1]);
-                    radius = Double.parseDouble(staticReader.readLine().split(" ")[1]);
-                    mass = Double.parseDouble(staticReader.readLine().split(" ")[1]);
-                    initialVelocity = Double.parseDouble(staticReader.readLine().split(" ")[1]);
-                    mainPerimeterWidth = Double.parseDouble(staticReader.readLine().split(" ")[1]);
-                    mainPerimeterHeight = Double.parseDouble(staticReader.readLine().split(" ")[1]);
-                    minorPerimeterWidth = Double.parseDouble(staticReader.readLine().split(" ")[1]);
-                    minorPerimeterHeight = Double.parseDouble(staticReader.readLine().split(" ")[1]);
+            try {
+                // Read static file
+                BufferedReader staticReader = new BufferedReader(new FileReader("txt/static_" + input + ".txt"));
+                N = Integer.parseInt(staticReader.readLine().split(" ")[1]);
+                radius = Double.parseDouble(staticReader.readLine().split(" ")[1]);
+                mass = Double.parseDouble(staticReader.readLine().split(" ")[1]);
+                initialVelocity = Double.parseDouble(staticReader.readLine().split(" ")[1]);
+                mainPerimeterWidth = Double.parseDouble(staticReader.readLine().split(" ")[1]);
+                mainPerimeterHeight = Double.parseDouble(staticReader.readLine().split(" ")[1]);
+                minorPerimeterWidth = Double.parseDouble(staticReader.readLine().split(" ")[1]);
+                minorPerimeterHeight = Double.parseDouble(staticReader.readLine().split(" ")[1]);
 
+                staticReader.close();
 
-                    staticReader.close();
+                // Read dynamic file
+                BufferedReader dynamicReader = new BufferedReader(new FileReader("txt/dynamic_" + input + ".txt"));
+                String line;
 
-                    // Read dynamic file
-                    BufferedReader dynamicReader = new BufferedReader(new FileReader("txt/dynamic_" + input + ".txt"));
-                    String line;
-
-                    while ((line = dynamicReader.readLine()) != null) {
-                        String[] position = line.split(" ");
-                        double x = Double.parseDouble(position[0]);
-                        double y = Double.parseDouble(position[1]);
-                        double velocityX = Double.parseDouble(position[2]);
-                        double velocityY = Double.parseDouble(position[3]);
-                        particles.add(new Particle(x, y, radius, mass, velocityX, velocityY));
-                    }
-                    dynamicReader.close();
-
-                    GasDiffusion gd = new GasDiffusion(particles, mainPerimeterWidth, mainPerimeterHeight,
-                            minorPerimeterWidth, minorPerimeterHeight, maxStep, rep);
-                    gd.start();
-
-                } catch (IOException e) {
-                    e.printStackTrace();
+                while ((line = dynamicReader.readLine()) != null) {
+                    String[] position = line.split(" ");
+                    double x = Double.parseDouble(position[0]);
+                    double y = Double.parseDouble(position[1]);
+                    double velocityX = Double.parseDouble(position[2]);
+                    double velocityY = Double.parseDouble(position[3]);
+                    particles.add(new Particle(x, y, radius, mass, velocityX, velocityY));
                 }
+                dynamicReader.close();
+
+                GasDiffusion gd = new GasDiffusion(particles, mainPerimeterWidth, mainPerimeterHeight,
+                        minorPerimeterWidth, minorPerimeterHeight);
+                gd.start();
+
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         }
 
         try {
-            BufferedWriter writerPy = new BufferedWriter(new FileWriter("../GasDiffusionAnimation/outputs/data.txt", true));
+        BufferedWriter writerPy = new BufferedWriter(new FileWriter("../GasDiffusionAnimation/outputs/data.txt", true));
 
-            writerPy.write("N " + N + "\n");
-            writerPy.write("MAX_STEP " + maxStep + "\n");
-            writerPy.write("RADIUS " + radius + "\n");
-            writerPy.write("MASS " + mass + "\n");
-            writerPy.write("INIT_VELOCITY " + initialVelocity + "\n");
-            writerPy.write("MAIN_WIDTH " + mainPerimeterWidth + "\n");
-            writerPy.write("MAIN_HEIGHT " + mainPerimeterHeight + "\n");
-            writerPy.write("MINOR_WIDTH " + minorPerimeterWidth + "\n");
+        writerPy.write("N " + N + "\n");
+        writerPy.write("RADIUS " + radius + "\n");
+        writerPy.write("MASS " + mass + "\n");
+        writerPy.write("INIT_VELOCITY " + initialVelocity + "\n");
+        writerPy.write("MAIN_WIDTH " + mainPerimeterWidth + "\n");
+        writerPy.write("MAIN_HEIGHT " + mainPerimeterHeight + "\n");
+        writerPy.write("MINOR_WIDTH " + minorPerimeterWidth + "\n");
 
-            writerPy.close();
-        } catch (IOException e) {
+        writerPy.close();
+        } catch(IOException e) {
             e.printStackTrace();
         }
     }

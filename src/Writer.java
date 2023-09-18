@@ -11,14 +11,11 @@ public class Writer {
     private final double radius = 0.0015; // [m]
     private final double mass = 1; // [kg]
     private final double initialVelocity = 0.01; // [m/s]
-    private final int maxStep = 50000;
-    private final int N = 500; // >200
-
+    private final int N = 300; // >200
 
     private void writeStaticFile() throws IOException {
         BufferedWriter writer = new BufferedWriter(new FileWriter("txt/static_" + minorPerimeterHeight + ".txt"));
         writer.write("N " + N + "\n");
-        writer.write("MAX_STEP " + maxStep + "\n");
         writer.write("RADIUS " + radius + "\n");
         writer.write("MASS " + mass + "\n");
         writer.write("INIT_VELOCITY " + initialVelocity + "\n");
